@@ -106,6 +106,7 @@ def dfs(min_packages, graph):
             path.append(coords)
         elif is_finish(graph, coords):
             path.append(coords)
+            return path
             break
 
         visited.add(coords)
@@ -114,7 +115,8 @@ def dfs(min_packages, graph):
             if neighbor not in visited:
                 stack.append(neighbor)
 
-    return path
+    # Path failed, DFS couldn't reach finish
+    return None
 
 
 def bfs(min_packages, graph):
