@@ -60,22 +60,14 @@ def graph_contains(graph, coords):
 
 def get_neighbors(coords):
     result = []
-    top_left = (coords[0] - 1, coords[1] - 1)
     top = (coords[0], coords[1] - 1)
-    top_right = (coords[0] + 1, coords[1] - 1)
     left = (coords[0] - 1, coords[1])
-    right = (coords[0] + 1, coords[1])
-    bottom_left = (coords[0] - 1, coords[1] + 1)
-    bottom_right = (coords[0] + 1, coords[1] + 1)
     bottom = (coords[0], coords[1] + 1)
-    result.append(top_left)
+    right = (coords[0] + 1, coords[1])
     result.append(top)
-    result.append(top_right)
+    result.append(bottom)
     result.append(left)
     result.append(right)
-    result.append(bottom_left)
-    result.append(bottom_right)
-    result.append(bottom)
     return result
 
 
@@ -99,19 +91,21 @@ def dfs(min_packages, graph):
     path.append(start)
 
     while len(stack) > 0:
+        print(stack)
         coords = stack.pop()
-        assert graph_contains(graph, coords)
+        print(coords)
 
-        if is_customer(graph, coords):
-            path.append(coords)
-        elif is_finish(graph, coords):
-            path.append(coords)
-            return path
-            break
+        if coords not in visited:
+            if is_customer(graph, coords):
+                path.append(coords)
+            elif is_finish(graph, coords):
+                path.append(coords)
+                return path
+            visited.add(coords)
 
-        visited.add(coords)
         neighbors = get_neighbors_in_graph(graph, coords)
         for neighbor in neighbors:
+            # Stack might contain duplicates
             if neighbor not in visited:
                 stack.append(neighbor)
 
