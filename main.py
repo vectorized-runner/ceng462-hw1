@@ -58,25 +58,20 @@ def graph_contains(graph, coords):
     return True
 
 
-def get_neighbors(coords):
+def get_neighbors_in_graph(graph, coords):
     result = []
     top = (coords[0], coords[1] - 1)
     left = (coords[0] - 1, coords[1])
     bottom = (coords[0], coords[1] + 1)
     right = (coords[0] + 1, coords[1])
-    result.append(top)
-    result.append(bottom)
-    result.append(left)
-    result.append(right)
-    return result
-
-
-def get_neighbors_in_graph(graph, coords):
-    result = []
-    neighbors = get_neighbors(coords)
-    for neighbor in neighbors:
-        if graph_contains(graph, neighbor):
-            result.append(neighbor)
+    if graph_contains(graph, top):
+        result.append(top)
+    if graph_contains(graph, bottom):
+        result.append(bottom)
+    if graph_contains(graph, left):
+        result.append(left)
+    if graph_contains(graph, right):
+        result.append(right)
 
     return result
 
