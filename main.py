@@ -83,7 +83,7 @@ def get_neighbors_in_graph(graph, coords):
     result = []
     neighbors = get_neighbors(coords)
     for neighbor in neighbors:
-        if graph_contains(graph, coords):
+        if graph_contains(graph, neighbor):
             result.append(neighbor)
 
     return result
@@ -92,20 +92,29 @@ def get_neighbors_in_graph(graph, coords):
 def dfs(min_packages, graph):
     current_package = 0
     stack = []
-    output = []
-    visited = {}
+    path = []
+    visited = set()
     start = find_start(graph)
     stack.append(start)
-    output.append(start)
+    path.append(start)
 
     while len(stack) > 0:
         coords = stack.pop()
-        if is_customer(graph, coords):
-            return 0
-        elif is_finish(graph, coords):
-            return 0
+        assert graph_contains(graph, coords)
 
-    return 0
+        if is_customer(graph, coords):
+            path.append(coords)
+        elif is_finish(graph, coords):
+            path.append(coords)
+            break
+
+        visited.add(coords)
+        neighbors = get_neighbors_in_graph(graph, coords)
+        for neighbor in neighbors:
+            if neighbor not in visited:
+                stack.append(neighbor)
+
+    return path
 
 
 def bfs(min_packages, graph):
@@ -130,12 +139,6 @@ def UnInformedSearch(method_name, problem_file_name):
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    queue = []
-    queue.append((1, 1))
-    queue.append((2, 2))
-    print(queue.pop())
-    print(queue.pop())
-
     example_package = 3
 
     example_graph = [
@@ -148,7 +151,5 @@ if __name__ == '__main__':
         "......F.",
         "C...S.C."]
 
-    start = find_start(example_graph)
-
-    print(start)
+    print(dfs(example_package, example_graph))
     print("done")
