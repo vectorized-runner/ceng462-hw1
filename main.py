@@ -58,12 +58,13 @@ def graph_contains(graph, coords):
     return True
 
 
+# x is ROW, y is COLUMN
 def get_neighbors_in_graph(graph, coords):
     result = []
-    top = (coords[0], coords[1] - 1)
-    left = (coords[0] - 1, coords[1])
-    bottom = (coords[0], coords[1] + 1)
-    right = (coords[0] + 1, coords[1])
+    top = (coords[0] - 1, coords[1])
+    left = (coords[0], coords[1] - 1)
+    bottom = (coords[0] + 1, coords[1])
+    right = (coords[0], coords[1] + 1)
     if graph_contains(graph, top):
         result.append(top)
     if graph_contains(graph, bottom):
