@@ -11,26 +11,99 @@ def parse_file(file_name):
 
 
 def find_start(graph):
-    row_count = len(graph)
-    column_count = len(graph[0])
+    graph_size = get_graph_size(graph)
+    row_count = graph_size[0]
+    column_count = graph_size[1]
     current_row = 0
 
     while current_row != row_count:
         current_col = 0
         while current_col != column_count:
-            print(graph[current_row][current_col])
-            if graph[current_row][current_col] == 'S':
+            if is_start(graph, (current_row, current_col)):
                 return current_row, current_col
             current_col += 1
         current_row += 1
 
 
+def get_letter(graph, coords):
+    return graph[coords[0]][coords[1]]
+
+
+def is_customer(graph, coords):
+    return get_letter(graph, coords) == 'C'
+
+
+def is_start(graph, coords):
+    return get_letter(graph, coords) == 'S'
+
+
+def is_finish(graph, coords):
+    return get_letter(graph, coords) == 'F'
+
+
+def get_graph_size(graph):
+    return len(graph), len(graph[0])
+
+
+def graph_contains(graph, coords):
+    graph_size = get_graph_size(graph)
+    if coords[0] < 0:
+        return False
+    if coords[1] < 0:
+        return False
+    if coords[0] >= graph_size[0]:
+        return False
+    if coords[1] >= graph_size[1]:
+        return False
+    return True
+
+
+def get_neighbors(coords):
+    result = []
+    top_left = (coords[0] - 1, coords[1] - 1)
+    top = (coords[0], coords[1] - 1)
+    top_right = (coords[0] + 1, coords[1] - 1)
+    left = (coords[0] - 1, coords[1])
+    right = (coords[0] + 1, coords[1])
+    bottom_left = (coords[0] - 1, coords[1] + 1)
+    bottom_right = (coords[0] + 1, coords[1] + 1)
+    bottom = (coords[0], coords[1] + 1)
+    result.append(top_left)
+    result.append(top)
+    result.append(top_right)
+    result.append(left)
+    result.append(right)
+    result.append(bottom_left)
+    result.append(bottom_right)
+    result.append(bottom)
+    return result
+
+
+def get_neighbors_in_graph(graph, coords):
+    result = []
+    neighbors = get_neighbors(coords)
+    for neighbor in neighbors:
+        if graph_contains(graph, coords):
+            result.append(neighbor)
+
+    return result
+
+
 def dfs(min_packages, graph):
     current_package = 0
     stack = []
+    output = []
     visited = {}
     start = find_start(graph)
-    
+    stack.append(start)
+    output.append(start)
+
+    while len(stack) > 0:
+        coords = stack.pop()
+        if is_customer(graph, coords):
+            return 0
+        elif is_finish(graph, coords):
+            return 0
 
     return 0
 
@@ -78,3 +151,4 @@ if __name__ == '__main__':
     start = find_start(example_graph)
 
     print(start)
+    print("done")
