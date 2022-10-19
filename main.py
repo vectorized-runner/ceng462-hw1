@@ -65,12 +65,12 @@ def get_neighbors_in_graph(graph, coords):
     left = (coords[0], coords[1] - 1)
     bottom = (coords[0] + 1, coords[1])
     right = (coords[0], coords[1] + 1)
+    if graph_contains(graph, left):
+        result.append(left)
     if graph_contains(graph, top):
         result.append(top)
     if graph_contains(graph, bottom):
         result.append(bottom)
-    if graph_contains(graph, left):
-        result.append(left)
     if graph_contains(graph, right):
         result.append(right)
 
@@ -110,7 +110,40 @@ def dfs(min_packages, graph):
 
 
 def bfs(min_packages, graph):
-    return 0
+    package_count = 0
+    queue = []
+    path = []
+    visited = set()
+    start = find_start(graph)
+    queue.append(start)
+    path.append(start)
+    visited.add(start)
+
+    while len(queue) > 0:
+        print(queue)
+        coords = queue.pop(0)
+        print(coords)
+        assert (coords in visited)
+
+        if is_customer(graph, coords):
+            path.append(coords)
+            package_count += 1
+            if package_count == min_packages:
+                # Append the final to result
+                return path
+        # elif is_finish(graph, coords):
+        # We don't finish the path, still packages left
+        # continue
+        # path.append(coords)
+        # return path
+
+        neighbors = get_neighbors_in_graph(graph, coords)
+        for neighbor in neighbors:
+            if neighbor not in visited:
+                visited.add(neighbor)
+                queue.append(neighbor)
+
+    return None
 
 
 def ucs(min_packages, graph):
@@ -143,5 +176,10 @@ if __name__ == '__main__':
         "......F.",
         "C...S.C."]
 
-    print(dfs(example_package, example_graph))
+    print("Size:")
+    print(get_graph_size(example_graph))
+    print("Start:")
+    print(find_start(example_graph))
+    print("Bfs:")
+    print(bfs(example_package, example_graph))
     print("done")
