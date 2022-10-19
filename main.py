@@ -1,6 +1,8 @@
 def manhattan_dist(coord_a, coord_b):
-    xdiff = abs(coord_a[0] - coord_b[0])
-    ydiff = abs(coord_a[1] - coord_b[1])
+    (ax, ay) = coord_a
+    (bx, by) = coord_b
+    xdiff = abs(ax - bx)
+    ydiff = abs(ay - by)
     return xdiff + ydiff
 
 
@@ -10,23 +12,32 @@ def parse_file(file_name):
     return min_packages, graph
 
 
-def find_start(graph):
-    graph_size = get_graph_size(graph)
-    row_count = graph_size[0]
-    column_count = graph_size[1]
+def find_start_and_final(graph):
+    (row_count, column_count) = get_graph_size(graph)
     current_row = 0
+    start = (0, 0)
+    final = (0, 0)
+    found = 0
 
     while current_row != row_count:
         current_col = 0
         while current_col != column_count:
             if is_start(graph, (current_row, current_col)):
-                return current_row, current_col
+                start = (current_row, current_col)
+                found += 1
+            elif is_finish(graph, (current_row, current_col)):
+                final = (current_row, current_col)
+                found += 1
+
+            if found == 2:
+                return start, final
             current_col += 1
         current_row += 1
 
 
 def get_letter(graph, coords):
-    return graph[coords[0]][coords[1]]
+    (x, y) = coords
+    return graph[x][y]
 
 
 def is_customer(graph, coords):
@@ -46,33 +57,38 @@ def get_graph_size(graph):
 
 
 def graph_contains(graph, coords):
-    graph_size = get_graph_size(graph)
-    if coords[0] < 0:
+    (x, y) = coords
+    (sizeX, sizeY) = get_graph_size(graph)
+    if x < 0:
         return False
-    if coords[1] < 0:
+    if y < 0:
         return False
-    if coords[0] >= graph_size[0]:
+    if x >= sizeX:
         return False
-    if coords[1] >= graph_size[1]:
+    if y >= sizeY:
         return False
     return True
 
 
 # x is ROW, y is COLUMN
+# going right -> increase y [Column], going up -> decrease x [Row]
 def get_neighbors_in_graph(graph, coords):
     result = []
-    top = (coords[0] - 1, coords[1])
-    left = (coords[0], coords[1] - 1)
-    bottom = (coords[0] + 1, coords[1])
-    right = (coords[0], coords[1] + 1)
+    (x, y) = coords
+    top = (x - 1, y)
+    bottom = (x + 1, y)
+    left = (x, y - 1)
+    right = (x, y + 1)
+
+    # TODO: Ensure add order is correct
+    if graph_contains(graph, right):
+        result.append(right)
     if graph_contains(graph, left):
         result.append(left)
     if graph_contains(graph, top):
         result.append(top)
     if graph_contains(graph, bottom):
         result.append(bottom)
-    if graph_contains(graph, right):
-        result.append(right)
 
     return result
 
@@ -82,7 +98,7 @@ def dfs(min_packages, graph):
     stack = []
     path = []
     visited = set()
-    start = find_start(graph)
+    (start, final) = find_start_and_final(graph)
     stack.append(start)
     path.append(start)
 
@@ -94,9 +110,17 @@ def dfs(min_packages, graph):
         if coords not in visited:
             if is_customer(graph, coords):
                 path.append(coords)
+                # TODO: Ensure this is the correct implementation,
+                # after enough customers are met append the final and return
+                current_package += 1
+                if current_package == min_packages:
+                    path.append(final)
+                    return path
             elif is_finish(graph, coords):
-                path.append(coords)
-                return path
+                # TODO: How should we handle this case?
+                print("Error: Reached Final before Reaching all Customers.")
+                # path.append(coords)
+                return None
             visited.add(coords)
 
         neighbors = get_neighbors_in_graph(graph, coords)
@@ -114,7 +138,7 @@ def bfs(min_packages, graph):
     queue = []
     path = []
     visited = set()
-    start = find_start(graph)
+    (start, final) = find_start_and_final(graph)
     queue.append(start)
     path.append(start)
     visited.add(start)
@@ -176,10 +200,9 @@ if __name__ == '__main__':
         "......F.",
         "C...S.C."]
 
-    print("Size:")
-    print(get_graph_size(example_graph))
-    print("Start:")
-    print(find_start(example_graph))
-    print("Bfs:")
-    print(bfs(example_package, example_graph))
+    # print("Size:")
+    # print(get_graph_size(example_graph))
+    # print("Start:")
+    # print(find_start(example_graph))
+    print(dfs(example_package, example_graph))
     print("done")
