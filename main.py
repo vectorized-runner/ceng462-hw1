@@ -110,17 +110,11 @@ def dfs(min_packages, graph):
         if coords not in visited:
             if is_customer(graph, coords):
                 path.append(coords)
-                # TODO: Ensure this is the correct implementation,
                 # after enough customers are met append the final and return
                 current_package += 1
                 if current_package == min_packages:
                     path.append(final)
                     return path
-            elif is_finish(graph, coords):
-                # TODO: How should we handle this case?
-                print("Error: Reached Final before Reaching all Customers.")
-                # path.append(coords)
-                return None
             visited.add(coords)
 
         neighbors = get_neighbors_in_graph(graph, coords)
@@ -153,13 +147,8 @@ def bfs(min_packages, graph):
             path.append(coords)
             package_count += 1
             if package_count == min_packages:
-                # Append the final to result
+                path.append(final)
                 return path
-        # elif is_finish(graph, coords):
-        # We don't finish the path, still packages left
-        # continue
-        # path.append(coords)
-        # return path
 
         neighbors = get_neighbors_in_graph(graph, coords)
         for neighbor in neighbors:
@@ -188,21 +177,15 @@ def UnInformedSearch(method_name, problem_file_name):
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    example_package = 3
+    example_package = 2
+    example_graph = ['....C...',
+                     '.F......',
+                     '.....C..',
+                     '.......C',
+                     '........',
+                     'C.......',
+                     '.C......',
+                     'C...S.C.']
 
-    example_graph = [
-        "C...C...",
-        "........ ",
-        "........",
-        ".....C.C",
-        "........",
-        "C.......",
-        "......F.",
-        "C...S.C."]
-
-    # print("Size:")
-    # print(get_graph_size(example_graph))
-    # print("Start:")
-    # print(find_start(example_graph))
     print(dfs(example_package, example_graph))
     print("done")
