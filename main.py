@@ -207,5 +207,29 @@ if __name__ == '__main__':
                        '.C......',
                        'C...S.C.']
 
+    # Sample3
+    #print(UnInformedSearch("DFS","sample.txt"))
+    #[[7, 4], [7, 6], [7, 0], [6, 1], [5, 0], [3, 7], [2, 5], [0, 4], [1, 1]]
+    #print(UnInformedSearch("BFS","sample.txt"))
+    #[[7, 4], [0, 4], [2, 5], [3, 7], [5, 0], [6, 1], [7, 0], [7, 6], [1, 1]]
+    #print(UnInformedSearch("UCS","sample.txt"))
+    #[[7, 4], [6, 1], [5, 0], [7, 0], [7, 6], [3, 7], [2, 5], [0, 4], [1, 1]]
+
+    # Sample2
+    #print(UnInformedSearch("DFS", "sample.txt"))
+    #None
+    #print(UnInformedSearch("BFS", "sample.txt"))
+    #None
+    #print(UnInformedSearch("UCS", "sample.txt"))
+    #None
+
+    # Sample1
+    #print(UnInformedSearch("DFS", "sample.txt"))
+    #[[7, 4], [7, 6], [7, 0], [1, 1]]
+    #print(UnInformedSearch("BFS", "sample.txt"))
+    #[[7, 4], [0, 4], [2, 5], [1, 1]]
+    #print(UnInformedSearch("UCS", "sample.txt"))
+    #[[7, 4], [6, 1], [5, 0], [1, 1]]
+
     print(dfs(example_graph_1, min_1))
     print("done")
