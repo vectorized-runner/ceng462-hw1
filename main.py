@@ -124,14 +124,15 @@ def bfs(min_packages, graph):
 
 
 def ucs(min_packages, graph):
-    package_count = -1
-    path = []
-    visited = set()
     (start, customers, final) = find_start_customers_final(graph)
+
+    if len(customers) < min_packages:
+        return None
 
     distances = {}
     previous = {}
     queue = []
+    visited = set()
 
     for customer in customers:
         # 1m used instead of infinity
@@ -139,17 +140,18 @@ def ucs(min_packages, graph):
         previous.update({customer: None})
         queue.append(customer)
 
+    distances.update({final: 1_000_000})
+    previous.update({final: None})
+    queue.append(final)
+
+    distances.update({start: 0})
+    previous.update({start: None})
+
     queue.append(start)
     visited.add(start)
 
     while len(queue) > 0:
-        min_coords = extract_min(queue, distances)
-        path.append(min_coords)
-        package_count += 1
-        if package_count == min_packages:
-            path.append(final)
-            return path
-
+        min_coords = extract_min_queue(queue, distances)
         queue.remove(min_coords)
 
         for coords in queue:
@@ -158,14 +160,38 @@ def ucs(min_packages, graph):
                 distances[coords] = new_dist
                 previous[coords] = min_coords
 
-        # Extract min from the queue
-        # Update the distances if lower
-        break
+    for (key, value) in distances.items():
+        print(f"Cost of {key} is {value}")
 
-    return None
+    node = final
+    while node is not None:
+        print(f"Node is {node}")
+        node = previous[node]
 
 
-def extract_min(queue, distances):
+    # Shortest distances to start is finished here, now get the smallest ones
+    path = []
+    while len(path) != min_packages + 1:
+        coords = extract_min(distances)
+        path.append(coords)
+        del distances[coords]
+    path.append(final)
+    return path
+
+
+def extract_min(distances):
+    min_distance = 10_000_000
+    min_coords = None
+
+    for (coords, distance) in distances.items():
+        if distance < min_distance:
+            min_distance = distance
+            min_coords = coords
+
+    return min_coords
+
+
+def extract_min_queue(queue, distances):
     min_distance = 10_000_000
     min_coords = None
 
