@@ -70,29 +70,6 @@ def graph_contains(graph, coords):
     return True
 
 
-# x is ROW, y is COLUMN
-# going right -> increase y [Column], going up -> decrease x [Row]
-def get_neighbors_in_graph(graph, coords):
-    result = []
-    (x, y) = coords
-    top = (x - 1, y)
-    bottom = (x + 1, y)
-    left = (x, y - 1)
-    right = (x, y + 1)
-
-    # TODO: Ensure add order is correct
-    if graph_contains(graph, right):
-        result.append(right)
-    if graph_contains(graph, left):
-        result.append(left)
-    if graph_contains(graph, top):
-        result.append(top)
-    if graph_contains(graph, bottom):
-        result.append(bottom)
-
-    return result
-
-
 def dfs(min_packages, graph):
     # We set this to -1 so that removing 'start' from the queue should make it 0, then we count customers
     current_package = -1
@@ -195,28 +172,28 @@ if __name__ == '__main__':
                        'C...S.C.']
 
     # Sample3
-    #print(UnInformedSearch("DFS","sample.txt"))
-    #[[7, 4], [7, 6], [7, 0], [6, 1], [5, 0], [3, 7], [2, 5], [0, 4], [1, 1]]
-    #print(UnInformedSearch("BFS","sample.txt"))
-    #[[7, 4], [0, 4], [2, 5], [3, 7], [5, 0], [6, 1], [7, 0], [7, 6], [1, 1]]
-    #print(UnInformedSearch("UCS","sample.txt"))
-    #[[7, 4], [6, 1], [5, 0], [7, 0], [7, 6], [3, 7], [2, 5], [0, 4], [1, 1]]
+    # print(UnInformedSearch("DFS","sample.txt"))
+    # [[7, 4], [7, 6], [7, 0], [6, 1], [5, 0], [3, 7], [2, 5], [0, 4], [1, 1]]
+    # print(UnInformedSearch("BFS","sample.txt"))
+    # [[7, 4], [0, 4], [2, 5], [3, 7], [5, 0], [6, 1], [7, 0], [7, 6], [1, 1]]
+    # print(UnInformedSearch("UCS","sample.txt"))
+    # [[7, 4], [6, 1], [5, 0], [7, 0], [7, 6], [3, 7], [2, 5], [0, 4], [1, 1]]
 
     # Sample2
-    #print(UnInformedSearch("DFS", "sample.txt"))
-    #None
-    #print(UnInformedSearch("BFS", "sample.txt"))
-    #None
-    #print(UnInformedSearch("UCS", "sample.txt"))
-    #None
+    # print(UnInformedSearch("DFS", "sample.txt"))
+    # None
+    # print(UnInformedSearch("BFS", "sample.txt"))
+    # None
+    # print(UnInformedSearch("UCS", "sample.txt"))
+    # None
 
     # Sample1
-    #print(UnInformedSearch("DFS", "sample.txt"))
-    #[[7, 4], [7, 6], [7, 0], [1, 1]]
-    #print(UnInformedSearch("BFS", "sample.txt"))
-    #[[7, 4], [0, 4], [2, 5], [1, 1]]
-    #print(UnInformedSearch("UCS", "sample.txt"))
-    #[[7, 4], [6, 1], [5, 0], [1, 1]]
+    # print(UnInformedSearch("DFS", "sample.txt"))
+    # [[7, 4], [7, 6], [7, 0], [1, 1]]
+    # print(UnInformedSearch("BFS", "sample.txt"))
+    # [[7, 4], [0, 4], [2, 5], [1, 1]]
+    # print(UnInformedSearch("UCS", "sample.txt"))
+    # [[7, 4], [6, 1], [5, 0], [1, 1]]
 
     print(dfs(min_1, example_graph_1))
     print(dfs(min_2, example_graph_2))
