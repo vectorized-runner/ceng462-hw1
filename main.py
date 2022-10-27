@@ -7,9 +7,9 @@ def manhattan_dist(coord_a, coord_b):
 
 
 def parse_file(file_name):
-    min_packages = 0
-    graph = [[]]
-    return min_packages, graph
+    f = open(file_name, "r")
+    d = eval(f.read())
+    return d['min'], d['env']
 
 
 def find_start_customers_final(graph):
@@ -123,7 +123,7 @@ def bfs(min_packages, graph):
     return None
 
 
-def get_min_cost(current_cost, visited, customers, current_packages, min_packages, coords, final, path):
+def get_min_cost(current_cost, customers, current_packages, min_packages, coords, final, path):
     current_packages += 1
     path.append(coords)
 
@@ -132,29 +132,26 @@ def get_min_cost(current_cost, visited, customers, current_packages, min_package
         cost = current_cost + manhattan_dist(coords, final)
         return cost, path
 
-    visited.add(coords)
-
     min_cost = 1_000_000
     min_path = None
     for customer in customers:
-        if customer not in visited:
+        if customer not in path:
             cost = current_cost + manhattan_dist(coords, customer)
-            search = get_min_cost(cost, visited.copy(), customers, current_packages, min_packages, customer, final,
-                                  path.copy())
+            search = get_min_cost(cost, customers, current_packages, min_packages, customer, final, path.copy())
             if search[0] < min_cost:
                 min_cost = search[0]
                 min_path = search[1]
     return min_cost, min_path
 
 
+# Using Dijkstra doesn't help in this question, this is a brute-force finding all paths algorithm
 def ucs(min_packages, graph):
     (start, customers, final) = find_start_customers_final(graph)
 
     if len(customers) < min_packages:
         return None
 
-    path = []
-    return get_min_cost(0, set(), customers, -1, min_packages, start, final, path)[1]
+    return get_min_cost(0, customers, -1, min_packages, start, final, [])[1]
 
 
 def UnInformedSearch(method_name, problem_file_name):
@@ -168,64 +165,3 @@ def UnInformedSearch(method_name, problem_file_name):
     else:
         print("Unexpected method name: " + method_name)
 
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    min_3 = 7
-    example_graph_3 = ['....C...',
-                       '.F......',
-                       '.....C..',
-                       '.......C',
-                       '........',
-                       'C.......',
-                       '.C......',
-                       'C...S.C.']
-
-    min_2 = 8
-    example_graph_2 = ['....C...',
-                       '.F......',
-                       '.....C..',
-                       '.......C',
-                       '........',
-                       'C.......',
-                       '.C......',
-                       'C...S.C.']
-
-    min_1 = 2
-    example_graph_1 = ['....C...',
-                       '.F......',
-                       '.....C..',
-                       '.......C',
-                       '........',
-                       'C.......',
-                       '.C......',
-                       'C...S.C.']
-
-    # Sample3
-    # print(UnInformedSearch("DFS","sample.txt"))
-    # [[7, 4], [7, 6], [7, 0], [6, 1], [5, 0], [3, 7], [2, 5], [0, 4], [1, 1]]
-    # print(UnInformedSearch("BFS","sample.txt"))
-    # [[7, 4], [0, 4], [2, 5], [3, 7], [5, 0], [6, 1], [7, 0], [7, 6], [1, 1]]
-    # print(UnInformedSearch("UCS","sample.txt"))
-    # [[7, 4], [6, 1], [5, 0], [7, 0], [7, 6], [3, 7], [2, 5], [0, 4], [1, 1]]
-
-    # Sample2
-    # print(UnInformedSearch("DFS", "sample.txt"))
-    # None
-    # print(UnInformedSearch("BFS", "sample.txt"))
-    # None
-    # print(UnInformedSearch("UCS", "sample.txt"))
-    # None
-
-    # Sample1
-    # print(UnInformedSearch("DFS", "sample.txt"))
-    # [[7, 4], [7, 6], [7, 0], [1, 1]]
-    # print(UnInformedSearch("BFS", "sample.txt"))
-    # [[7, 4], [0, 4], [2, 5], [1, 1]]
-    # print(UnInformedSearch("UCS", "sample.txt"))
-    # [[7, 4], [6, 1], [5, 0], [1, 1]]
-
-    print(ucs(min_1, example_graph_1))
-    print(ucs(min_2, example_graph_2))
-    print(ucs(min_3, example_graph_3))
-    print("done")
