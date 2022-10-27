@@ -187,5 +187,25 @@ if __name__ == '__main__':
                        '.C......',
                        'C...S.C.']
 
-    print(dfs(example_package, example_graph))
+    min_2 = 8
+    example_graph_2 = ['....C...',
+                       '.F......',
+                       '.....C..',
+                       '.......C',
+                       '........',
+                       'C.......',
+                       '.C......',
+                       'C...S.C.']
+
+    min_1 = 2
+    example_graph_1 = ['....C...',
+                       '.F......',
+                       '.....C..',
+                       '.......C',
+                       '........',
+                       'C.......',
+                       '.C......',
+                       'C...S.C.']
+
+    print(dfs(example_graph_1, min_1))
     print("done")
