@@ -139,7 +139,8 @@ def get_min_cost(current_cost, visited, customers, current_packages, min_package
     for customer in customers:
         if customer not in visited:
             cost = current_cost + manhattan_dist(coords, customer)
-            search = get_min_cost(cost, visited.copy(), customers, current_packages, min_packages, customer, final, path.copy())
+            search = get_min_cost(cost, visited.copy(), customers, current_packages, min_packages, customer, final,
+                                  path.copy())
             if search[0] < min_cost:
                 min_cost = search[0]
                 min_path = search[1]
@@ -154,31 +155,6 @@ def ucs(min_packages, graph):
 
     path = []
     return get_min_cost(0, set(), customers, -1, min_packages, start, final, path)[1]
-
-
-def extract_min(distances):
-    min_distance = 10_000_000
-    min_coords = None
-
-    for (coords, distance) in distances.items():
-        if distance < min_distance:
-            min_distance = distance
-            min_coords = coords
-
-    return min_coords
-
-
-def extract_min_queue(queue, distances):
-    min_distance = 10_000_000
-    min_coords = None
-
-    for coords in queue:
-        distance = distances[coords]
-        if distance < min_distance:
-            min_distance = distance
-            min_coords = coords
-
-    return min_coords
 
 
 def UnInformedSearch(method_name, problem_file_name):
