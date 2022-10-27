@@ -177,15 +177,15 @@ def UnInformedSearch(method_name, problem_file_name):
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    example_package = 2
-    example_graph = ['....C...',
-                     '.F......',
-                     '.....C..',
-                     '.......C',
-                     '........',
-                     'C.......',
-                     '.C......',
-                     'C...S.C.']
+    min_3 = 7
+    example_graph_3 = ['....C...',
+                       '.F......',
+                       '.....C..',
+                       '.......C',
+                       '........',
+                       'C.......',
+                       '.C......',
+                       'C...S.C.']
 
     print(dfs(example_package, example_graph))
     print("done")
