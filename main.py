@@ -124,7 +124,58 @@ def bfs(min_packages, graph):
 
 
 def ucs(min_packages, graph):
-    return 0
+    package_count = -1
+    path = []
+    visited = set()
+    (start, customers, final) = find_start_customers_final(graph)
+
+    distances = {}
+    previous = {}
+    queue = []
+
+    for customer in customers:
+        # 1m used instead of infinity
+        distances.update({customer: 1_000_000})
+        previous.update({customer: None})
+        queue.append(customer)
+
+    queue.append(start)
+    visited.add(start)
+
+    while len(queue) > 0:
+        min_coords = extract_min(queue, distances)
+        path.append(min_coords)
+        package_count += 1
+        if package_count == min_packages:
+            path.append(final)
+            return path
+
+        queue.remove(min_coords)
+
+        for coords in queue:
+            new_dist = distances[min_coords] + manhattan_dist(coords, min_coords)
+            if new_dist < distances[coords]:
+                distances[coords] = new_dist
+                previous[coords] = min_coords
+
+        # Extract min from the queue
+        # Update the distances if lower
+        break
+
+    return None
+
+
+def extract_min(queue, distances):
+    min_distance = 10_000_000
+    min_coords = None
+
+    for coords in queue:
+        distance = distances[coords]
+        if distance < min_distance:
+            min_distance = distance
+            min_coords = coords
+
+    return min_coords
 
 
 def UnInformedSearch(method_name, problem_file_name):
@@ -195,7 +246,7 @@ if __name__ == '__main__':
     # print(UnInformedSearch("UCS", "sample.txt"))
     # [[7, 4], [6, 1], [5, 0], [1, 1]]
 
-    print(dfs(min_1, example_graph_1))
-    print(dfs(min_2, example_graph_2))
-    print(dfs(min_3, example_graph_3))
+    print(ucs(min_1, example_graph_1))
+    print(ucs(min_2, example_graph_2))
+    print(ucs(min_3, example_graph_3))
     print("done")
