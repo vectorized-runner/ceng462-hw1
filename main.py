@@ -123,60 +123,37 @@ def bfs(min_packages, graph):
     return None
 
 
+def get_min_cost(current_cost, visited, customers, current_packages, min_packages, coords, final, path):
+    current_packages += 1
+    path.append(coords)
+
+    if current_packages >= min_packages:
+        path.append(final)
+        cost = current_cost + manhattan_dist(coords, final)
+        return cost, path
+
+    visited.add(coords)
+
+    min_cost = 1_000_000
+    min_path = None
+    for customer in customers:
+        if customer not in visited:
+            cost = current_cost + manhattan_dist(coords, customer)
+            search = get_min_cost(cost, visited.copy(), customers, current_packages, min_packages, customer, final, path.copy())
+            if search[0] < min_cost:
+                min_cost = search[0]
+                min_path = search[1]
+    return min_cost, min_path
+
+
 def ucs(min_packages, graph):
     (start, customers, final) = find_start_customers_final(graph)
 
     if len(customers) < min_packages:
         return None
 
-    distances = {}
-    previous = {}
-    queue = []
-    visited = set()
-
-    for customer in customers:
-        # 1m used instead of infinity
-        distances.update({customer: 1_000_000})
-        previous.update({customer: None})
-        queue.append(customer)
-
-    distances.update({final: 1_000_000})
-    previous.update({final: None})
-    queue.append(final)
-
-    distances.update({start: 0})
-    previous.update({start: None})
-
-    queue.append(start)
-    visited.add(start)
-
-    while len(queue) > 0:
-        min_coords = extract_min_queue(queue, distances)
-        queue.remove(min_coords)
-
-        for coords in queue:
-            new_dist = distances[min_coords] + manhattan_dist(coords, min_coords)
-            if new_dist < distances[coords]:
-                distances[coords] = new_dist
-                previous[coords] = min_coords
-
-    for (key, value) in distances.items():
-        print(f"Cost of {key} is {value}")
-
-    node = final
-    while node is not None:
-        print(f"Node is {node}")
-        node = previous[node]
-
-
-    # Shortest distances to start is finished here, now get the smallest ones
     path = []
-    while len(path) != min_packages + 1:
-        coords = extract_min(distances)
-        path.append(coords)
-        del distances[coords]
-    path.append(final)
-    return path
+    return get_min_cost(0, set(), customers, -1, min_packages, start, final, path)[1]
 
 
 def extract_min(distances):
