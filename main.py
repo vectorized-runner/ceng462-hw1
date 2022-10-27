@@ -12,27 +12,27 @@ def parse_file(file_name):
     return min_packages, graph
 
 
-def find_start_and_final(graph):
+def find_start_customers_final(graph):
     (row_count, column_count) = get_graph_size(graph)
     current_row = 0
     start = (0, 0)
     final = (0, 0)
-    found = 0
+    customers = []
 
     while current_row != row_count:
         current_col = 0
         while current_col != column_count:
-            if is_start(graph, (current_row, current_col)):
-                start = (current_row, current_col)
-                found += 1
+            coords = (current_row, current_col)
+            if is_start(graph, coords):
+                start = coords
             elif is_finish(graph, (current_row, current_col)):
-                final = (current_row, current_col)
-                found += 1
-
-            if found == 2:
-                return start, final
+                final = coords
+            elif is_customer(graph, coords):
+                customers.append(coords)
             current_col += 1
         current_row += 1
+
+    return start, customers, final
 
 
 def get_letter(graph, coords):
@@ -98,14 +98,14 @@ def dfs(min_packages, graph):
     stack = []
     path = []
     visited = set()
-    (start, final) = find_start_and_final(graph)
+    (start, customers, final) = find_start_customers_final(graph)
     stack.append(start)
     path.append(start)
 
     while len(stack) > 0:
-        print(stack)
+        # print(stack)
         coords = stack.pop()
-        print(coords)
+        # print(coords)
 
         if coords not in visited:
             if is_customer(graph, coords):
@@ -128,33 +128,27 @@ def dfs(min_packages, graph):
 
 
 def bfs(min_packages, graph):
-    package_count = 0
+    # We set this to -1 so that removing 'start' from the queue should make it 0, then we count customers
+    package_count = -1
     queue = []
     path = []
     visited = set()
-    (start, final) = find_start_and_final(graph)
+    (start, customers, final) = find_start_customers_final(graph)
     queue.append(start)
-    path.append(start)
     visited.add(start)
 
     while len(queue) > 0:
-        print(queue)
         coords = queue.pop(0)
-        print(coords)
-        assert (coords in visited)
+        path.append(coords)
+        package_count += 1
+        if package_count == min_packages:
+            path.append(final)
+            return path
 
-        if is_customer(graph, coords):
-            path.append(coords)
-            package_count += 1
-            if package_count == min_packages:
-                path.append(final)
-                return path
-
-        neighbors = get_neighbors_in_graph(graph, coords)
-        for neighbor in neighbors:
-            if neighbor not in visited:
-                visited.add(neighbor)
-                queue.append(neighbor)
+        for customer in customers:
+            if customer not in visited:
+                visited.add(customer)
+                queue.append(customer)
 
     return None
 
@@ -231,5 +225,7 @@ if __name__ == '__main__':
     #print(UnInformedSearch("UCS", "sample.txt"))
     #[[7, 4], [6, 1], [5, 0], [1, 1]]
 
-    print(dfs(example_graph_1, min_1))
+    print(bfs(min_1, example_graph_1))
+    print(bfs(min_2, example_graph_2))
+    print(bfs(min_3, example_graph_3))
     print("done")
