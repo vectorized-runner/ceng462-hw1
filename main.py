@@ -94,36 +94,29 @@ def get_neighbors_in_graph(graph, coords):
 
 
 def dfs(min_packages, graph):
-    current_package = 0
+    # We set this to -1 so that removing 'start' from the queue should make it 0, then we count customers
+    current_package = -1
     stack = []
     path = []
     visited = set()
     (start, customers, final) = find_start_customers_final(graph)
     stack.append(start)
-    path.append(start)
 
     while len(stack) > 0:
-        # print(stack)
         coords = stack.pop()
-        # print(coords)
 
         if coords not in visited:
-            if is_customer(graph, coords):
-                path.append(coords)
-                # after enough customers are met append the final and return
-                current_package += 1
-                if current_package == min_packages:
-                    path.append(final)
-                    return path
+            path.append(coords)
+            current_package += 1
+            if current_package == min_packages:
+                path.append(final)
+                return path
             visited.add(coords)
 
-        neighbors = get_neighbors_in_graph(graph, coords)
-        for neighbor in neighbors:
-            # Stack might contain duplicates
-            if neighbor not in visited:
-                stack.append(neighbor)
+        for customer in customers:
+            if customer not in visited:
+                stack.append(customer)
 
-    # Path failed, DFS couldn't reach finish
     return None
 
 
@@ -225,7 +218,7 @@ if __name__ == '__main__':
     #print(UnInformedSearch("UCS", "sample.txt"))
     #[[7, 4], [6, 1], [5, 0], [1, 1]]
 
-    print(bfs(min_1, example_graph_1))
-    print(bfs(min_2, example_graph_2))
-    print(bfs(min_3, example_graph_3))
+    print(dfs(min_1, example_graph_1))
+    print(dfs(min_2, example_graph_2))
+    print(dfs(min_3, example_graph_3))
     print("done")
